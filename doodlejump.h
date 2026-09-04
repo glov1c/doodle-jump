@@ -1,5 +1,7 @@
-
 #pragma once
+
+#include "player.h"
+#include "platform.h"
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -15,6 +17,7 @@ class Game: public sf::Drawable, public sf::Transformable {
 	sf::RenderWindow window;
 
 	void update();
+	void reset();
 
 	public:
 		Game();
