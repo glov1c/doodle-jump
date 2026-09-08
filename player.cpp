@@ -15,8 +15,10 @@ Player::Player(const std::string& texture): playerTexture(texture), playerSprite
 	playerTexture.setSmooth(true);
 	playerSprite.setTexture(playerTexture);
 	playerSprite.scale({0.2f, 0.2f});
-	width = playerSprite.getOrigin().x;
-	height = playerSprite.getOrigin().y;
+	sf::FloatRect bounds = playerSprite.getGlobalBounds();
+	width = bounds.size.x;
+	height = bounds.size.y;
+	playerSprite.setOrigin({width / 2, height / 2});
 }
 
 sf::Vector2f Player::getRate() const {
@@ -55,8 +57,8 @@ void Player::update(float time) {
 		rate.x = 150;
 	} 
 	else {
-		rate.x = 0;
-		//if (std::abs(rate.x) < 1.0f) rate.x = 0;
+		rate.x *= 0.9f;  // Плавное замедление
+		if (std::abs(rate.x) < 1.0f) rate.x = 0;
 	}
 
 	sf::Vector2f pos = getPosition();

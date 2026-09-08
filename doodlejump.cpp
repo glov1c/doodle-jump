@@ -30,7 +30,7 @@ void Game::update(float time) {
 	checkCollisions();
 
 	if (player.getRate().y < 0) {
-		worldOffset += player.getRate().y * time;
+		worldOffset -= player.getRate().y * time;
         
 		float playerWorldY = player.getPosition().y;
 		if (playerWorldY < highestWorldY) {
@@ -49,7 +49,7 @@ void Game::render(sf::RenderWindow& window) {
 	window.draw(player);
 	
 	sf::RenderStates states;
-	states.transform.translate({0, 0});
+	states.transform.translate({0, worldOffset});
 	for(int i = 0; i < 5; i++) {
 		window.draw(platforms[i], states);
 	}
@@ -62,22 +62,19 @@ void Game::checkCollisions() {
 	sf::Vector2f playerRate = player.getRate();
 
 	for (auto& platform : platforms) {
-		sf::Vector2f platformWorldPos = platform.getPosition();
 		sf::FloatRect platformBounds = platform.getBounds();
 		
-		float width = platformBounds.size.x;
-		float height = platformBounds.size.y;
+		playerBounds.position.y -= worldOffset;
 
-		sf::FloatRect screenBounds;
-		screenBounds.position.x = platformWorldPos.x - width / 2;
-		screenBounds.position.y = platformWorldPos.y + worldOffset - height / 2;
-		screenBounds.size.x = width;
-		screenBounds.size.y = height;
+		if (playerBounds.findIntersection(platformBounds) && playerRate.y > 0) {
+			float playerBottom = playerBounds.position.y + playerBounds.size.y;
+			float platformTop = platformBounds.position.y;
 
-		if (playerBounds.findIntersection(screenBounds) && playerRate.y > 0) {
-			player.togglePlatform();
-			player.jump();
-			break;
+			if (playerBottom >= platformTop && playerBottom - playerRate.y * 0.1f <= platformTop) {
+				player.togglePlatform();
+				player.jump();
+				break;
+			}
 		}
 	}
 }
@@ -109,6 +106,10 @@ void Game::run() {
 						break;
 				}
 
+			}
+			else if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()) {
+				if (keyReleased->scancode == sf::Keyboard::Scancode::A) player.rotate(0, 0);
+				if (keyReleased->scancode == sf::Keyboard::Scancode::D) player.rotate(0, 0);
 			}
 		}
 

@@ -10,8 +10,8 @@ class Player: public sf::Drawable, public sf::Transformable {
 	sf::Texture playerTexture;
 	sf::Sprite playerSprite;
 	sf::Vector2f rate = {0, 0};
-	int width = 30;
-	int height = 50;
+	float width = 30;
+	float height = 50;
 	bool isOnGround = true;
 	bool rotateLeft = false;
 	bool rotateRight = false;
