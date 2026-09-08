@@ -7,20 +7,26 @@
 #include <string>
 
 class Player: public sf::Drawable, public sf::Transformable {
-	sf::Texture texture;
+	sf::Texture playerTexture;
+	sf::Sprite playerSprite;
 	sf::Vector2f rate = {0, 0};
-	const float width;
-	const float height;
+	int width = 30;
+	int height = 50;
+	bool isOnGround = true;
+	bool rotateLeft = false;
+	bool rotateRight = false;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	public:
 		Player()=delete;
-		Player(const std::string& texture, const float width = 30, const float height = 40);
+		Player(const std::string& texture);
 	
+		sf::Vector2f getRate() const;
+		sf::FloatRect getBounds() const;
 		void update(float time);
-		void rotate();
+		void rotate(bool toLeft, bool toRight);
 		void jump();
-		void fall();
+		void togglePlatform();
 		void reset();
 };	

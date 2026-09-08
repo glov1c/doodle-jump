@@ -20,6 +20,15 @@ Platform::Platform(float x, float y) {
 	rect.sf::Transformable::setPosition({x, y});
 }
 
+sf::FloatRect Platform::getBounds() const {
+	return rect.getGlobalBounds();
+}
+
+
+sf::Vector2f Platform::getPosition() const {
+	return rect.getPosition();
+}
+
 void Platform::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(rect, states);
 }

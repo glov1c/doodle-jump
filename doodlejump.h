@@ -10,17 +10,26 @@
 #include <string>
 
 
-class Game: public sf::Drawable, public sf::Transformable {
+class Game {
 	Player player;
+	sf::Texture backscreenTexture;
+	sf::Sprite backscreenSprite;
 	std::vector<Platform> platforms;
 	sf::Clock clock;
-	sf::RenderWindow window;
 
-	void update();
+	bool gameOver = false;
+	float highestWorldY = 0;
+	float worldOffset = 20;
+
+	void update(float time);
 	void reset();
+	void checkCollisions();
+	void init();
+	void render(sf::RenderWindow& window);
 
 	public:
-		Game();
+		Game()=delete;
+		Game(const std::string& backscreen);
 		void run();
 
 };
