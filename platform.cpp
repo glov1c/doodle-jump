@@ -24,6 +24,9 @@ sf::FloatRect Platform::getBounds() const {
 	return rect.getGlobalBounds();
 }
 
+void Platform::setPosition(const sf::Vector2f& pos) {
+	rect.setPosition(pos);
+}
 
 sf::Vector2f Platform::getPosition() const {
 	return rect.getPosition();

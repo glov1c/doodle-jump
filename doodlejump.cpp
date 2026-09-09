@@ -9,7 +9,7 @@
 #include <string>
 #include <cstdlib>
 
-Game::Game(const std::string& backscreen): player(Player("jumper.png")), backscreenTexture(backscreen), backscreenSprite(backscreenTexture) {
+Game::Game(const std::string& backscreen): player(Player("jumper.png")), backscreenTexture(backscreen), backscreenSprite(backscreenTexture), text(font) {
 	srand(time(NULL));
 	if (!backscreenTexture.loadFromFile(backscreen, false, sf::IntRect({0, 0}, {800, 600}))) {
 		std::cerr << "failed to load backscreen" << std::endl;
@@ -18,66 +18,82 @@ Game::Game(const std::string& backscreen): player(Player("jumper.png")), backscr
 	backscreenSprite.setTexture(backscreenTexture);
 	backscreenSprite.scale({1.33f, 1.33f});
 
+	platforms.push_back(Platform(275, 550));
 	for(int i = 0; i < 5; i++) {
-		platforms.push_back(Platform(rand() % 550 + 50, rand() % 700 + 50));
+		platforms.push_back(Platform(rand() % 550 + 50, rand() % 300));
 	}
 
 }
+
 
 void Game::update(float time) {
 	player.update(time);
 
-	checkCollisions();
+	worldOffset -= 0.09 * time;
+	if (worldOffset > 0) 
+		counter += (worldOffset / 10);
+	float playerWorldY = 800 / 2.0f + worldOffset;
+        sf::FloatRect playerBounds = player.getBounds();
 
-	if (player.getRate().y < 0) {
-		worldOffset -= player.getRate().y * time;
-        
-		float playerWorldY = player.getPosition().y;
-		if (playerWorldY < highestWorldY) {
-		    highestWorldY = playerWorldY;
-		}
+	for(auto& platform : platforms) {
+		sf::Vector2f pos = platform.getPosition();
+		platform.setPosition({pos.x, pos.y + worldOffset});
 	}
-
-	if (player.getPosition().y > 900) {
-        	gameOver = true;
-    	}
-}
-
-void Game::render(sf::RenderWindow& window) {
-	window.clear(sf::Color::Black);
-	window.draw(backscreenSprite);
-	window.draw(player);
-	
-	sf::RenderStates states;
-	states.transform.translate({0, worldOffset});
-	for(int i = 0; i < 5; i++) {
-		window.draw(platforms[i], states);
-	}
-	
-	window.display();
-}	
-
-void Game::checkCollisions() {
-	sf::FloatRect playerBounds = player.getBounds();
-	sf::Vector2f playerRate = player.getRate();
 
 	for (auto& platform : platforms) {
 		sf::FloatRect platformBounds = platform.getBounds();
-		
-		playerBounds.position.y -= worldOffset;
+		sf::FloatRect playerBounds = player.getBounds();
+		playerBounds.position.y += (playerBounds.size.y - 5) ;
+		playerBounds.size.y = 5;
 
-		if (playerBounds.findIntersection(platformBounds) && playerRate.y > 0) {
-			float playerBottom = playerBounds.position.y + playerBounds.size.y;
+		if (playerBounds.findIntersection(platformBounds)) {
 			float platformTop = platformBounds.position.y;
-
-			if (playerBottom >= platformTop && playerBottom - playerRate.y * 0.1f <= platformTop) {
-				player.togglePlatform();
-				player.jump();
+			if (worldOffset < 0 && playerWorldY < platformTop + 10.0f) {
+				worldOffset = 0.15;
 				break;
 			}
 		}
 	}
 }
+
+void Game::render(sf::RenderWindow& window) {
+	window.clear(sf::Color::Black);
+	window.draw(backscreenSprite);
+
+	text.setString(std::to_string(static_cast<int>(counter)));
+	text.setCharacterSize(36);
+	text.setFillColor(sf::Color::Red);
+	text.setPosition({290, 5});
+	window.draw(text);
+
+	window.draw(player);
+	
+
+	while (platforms.size() < 15  && (worldOffset > 0)) {
+		platforms.push_back(Platform(rand() % 450 + 50, -100 - (rand() % 400)));
+		platforms.push_back(Platform(rand() % 450 + 50, -400 - (rand() % 400)));
+		platforms.push_back(Platform(rand() % 450 + 50, -800 - (rand() % 400)));
+	}
+
+	for(auto it = platforms.begin(); it != platforms.end(); ) {
+		if (it->getPosition().y > 800 || it->getPosition().y < -1200) {
+			it = platforms.erase(it);
+		}
+		else {
+			++it;
+		}
+	}
+
+	if (platforms.size() == 0) gameOver = true;
+
+	for(auto& platform : platforms) {
+		window.draw(platform); 
+	}
+
+	
+	window.display();
+}	
+
 
 
 void Game::run() {

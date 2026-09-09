@@ -18,7 +18,8 @@ Player::Player(const std::string& texture): playerTexture(texture), playerSprite
 	sf::FloatRect bounds = playerSprite.getGlobalBounds();
 	width = bounds.size.x;
 	height = bounds.size.y;
-	playerSprite.setOrigin({width / 2, height / 2});
+	setPosition({250, 400});
+	playerSprite.setPosition(getPosition());
 }
 
 sf::Vector2f Player::getRate() const {
@@ -27,10 +28,11 @@ sf::Vector2f Player::getRate() const {
 
 void Player::jump() {
 	if (isOnGround) {
-		rate.y = -100;
+		rate.y = -400;
 		isOnGround = false;
 	}
 }
+
 
 void Player::rotate(bool toLeft, bool toRight) {
 	if (toLeft == true && toRight == false) {
@@ -48,22 +50,24 @@ void Player::rotate(bool toLeft, bool toRight) {
 }	
 
 void Player::update(float time) {
-	rate.y += 80 * time;
-
 	if (rotateLeft) {
-		rate.x = -150;
+		rate.x = -300;
+		if (this->getPosition().x <= 1)
+			rate.x = 0;
+			
 	}
        	else if (rotateRight) {
-		rate.x = 150;
+		rate.x = 300;
+		if (this->getPosition().x >= 599 - this->getBounds().size.x)
+			rate.x = 0;
 	} 
 	else {
-		rate.x *= 0.9f;  // Плавное замедление
+		rate.x *= 0.9f;
 		if (std::abs(rate.x) < 1.0f) rate.x = 0;
 	}
 
 	sf::Vector2f pos = getPosition();
 	pos.x += rate.x * time;
-	pos.y += rate.y * time;
 	setPosition(pos);
 	playerSprite.setPosition(getPosition());
 }

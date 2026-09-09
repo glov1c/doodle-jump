@@ -16,15 +16,15 @@ class Game {
 	sf::Sprite backscreenSprite;
 	std::vector<Platform> platforms;
 	sf::Clock clock;
+	sf::Font font = sf::Font("ARIAL.ttf");
+	sf::Text text;
 
 	bool gameOver = false;
-	float highestWorldY = 0;
-	float worldOffset = 20;
+	float worldOffset = 0;
+	float counter = 0;
 
 	void update(float time);
 	void reset();
-	void checkCollisions();
-	void init();
 	void render(sf::RenderWindow& window);
 
 	public:
