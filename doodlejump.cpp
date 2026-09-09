@@ -95,11 +95,31 @@ void Game::render(sf::RenderWindow& window) {
 }	
 
 
+void Game::reset() {
+	counter = 0;
+	player.setRate({0, 0});
+	player.setPosition({250, 400});
+	player.rotate(0, 0);
+	player.update(0);
+	
+	worldOffset = 0;
+
+	while(platforms.size() > 0) {
+		platforms.erase(platforms.begin());
+	}
+	platforms.push_back(Platform(275, 550));
+	for(int i = 0; i < 5; i++) {
+		platforms.push_back(Platform(rand() % 550 + 50, rand() % 300));
+	}
+	gameOver = false;
+}
+
+
 
 void Game::run() {
 	sf::RenderWindow window(sf::VideoMode({600, 800}), "Doodle jump");
 
-	while (window.isOpen() && !gameOver) {
+	while (window.isOpen()) {
 		float time = clock.restart().asSeconds();
 
 		while (const auto event = window.pollEvent()) {
@@ -131,6 +151,9 @@ void Game::run() {
 
 		if (!gameOver) 
 			update(time);
+		else { 
+			reset();
+		}
 
 		render(window);
 	}

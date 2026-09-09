@@ -23,6 +23,7 @@ class Player: public sf::Drawable, public sf::Transformable {
 		Player(const std::string& texture);
 	
 		sf::Vector2f getRate() const;
+		void setRate(const sf::Vector2f& newRate);
 		sf::FloatRect getBounds() const;
 		void update(float time);
 		void rotate(bool toLeft, bool toRight);

@@ -26,6 +26,10 @@ sf::Vector2f Player::getRate() const {
 	return rate;
 }
 
+void Player::setRate(const sf::Vector2f& newRate) {
+	rate = newRate;
+}
+
 void Player::jump() {
 	if (isOnGround) {
 		rate.y = -400;
