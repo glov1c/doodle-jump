@@ -9,7 +9,7 @@
 #include <string>
 #include <cstdlib>
 
-Game::Game(const std::string& backscreen): player(Player("jumper.png")), backscreenTexture(backscreen), backscreenSprite(backscreenTexture), text(font) {
+Game::Game(const std::string& backscreen): player(Player("resources/apple.png")), backscreenTexture(backscreen), backscreenSprite(backscreenTexture), text(font) {
 	srand(time(NULL));
 	if (!backscreenTexture.loadFromFile(backscreen, false, sf::IntRect({0, 0}, {800, 600}))) {
 		std::cerr << "failed to load backscreen" << std::endl;

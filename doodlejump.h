@@ -16,7 +16,7 @@ class Game {
 	sf::Sprite backscreenSprite;
 	std::vector<Platform> platforms;
 	sf::Clock clock;
-	sf::Font font = sf::Font("ARIAL.ttf");
+	sf::Font font = sf::Font("resources/ARIAL.ttf");
 	sf::Text text;
 
 	bool gameOver = false;

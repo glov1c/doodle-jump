@@ -9,7 +9,7 @@
 #include <ctime>
 
 int main() {
-	Game game("background.png");
+	Game game("resources/background.png");
 	game.run();
 	return 0;
 }	

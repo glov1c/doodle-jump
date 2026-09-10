@@ -8,13 +8,13 @@
 
 
 Player::Player(const std::string& texture): playerTexture(texture), playerSprite(playerTexture) {
-	if (!playerTexture.loadFromFile(texture, false, sf::IntRect({0, 0}, {360, 325}))) {
+	if (!playerTexture.loadFromFile(texture, false, sf::IntRect({0, 0}, {512, 512}))) {
 		std::cerr << "failed to load backscreen" << std::endl;
 		return; 
 	}
 	playerTexture.setSmooth(true);
 	playerSprite.setTexture(playerTexture);
-	playerSprite.scale({0.2f, 0.2f});
+	playerSprite.scale({0.15f, 0.15f});
 	sf::FloatRect bounds = playerSprite.getGlobalBounds();
 	width = bounds.size.x;
 	height = bounds.size.y;
